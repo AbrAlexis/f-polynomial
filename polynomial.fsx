@@ -95,3 +95,32 @@ let isLegal list =
     | Some 0 -> false
     | Some _ -> true
     | None -> true
+
+
+let restt = isLegal [ 1; 2; 3; 4 ]
+
+// printfn "%A" restt
+
+
+let rec removeLastElement list =
+    match list with
+    | [] -> []
+    | [ x ] -> []
+    | x :: xTail -> x :: removeLastElement xTail
+
+let svar = removeLastElement [ 1; 2 ]
+
+// printfn "%A" svar
+
+let rec ofList list =
+    let legal = isLegal list
+
+    match legal with
+    | true -> list
+    | false -> ofList (removeLastElement list)
+
+
+
+let svar1 = ofList [ 1; 2; 0; 1; 0 ]
+
+printfn "%A" svar1
