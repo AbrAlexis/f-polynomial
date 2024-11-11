@@ -66,6 +66,11 @@ let rec mul a b =
         add (mulC aHead b) (mulX (mul aTail b))
 
 
+// let Thom = mul [2;3;0;1] [1;2;3]
+
+// printfn "%A" Thom
+
+
 let eval value a =
     let rec evalInner value a counter =
         match a with
@@ -121,6 +126,78 @@ let rec ofList list =
 
 
 
-let svar1 = ofList [ 1; 2; 0; 1; 0 ]
+// let svar1 = ofList [ 1; 2; 0; 1; 0 ]
 
-printfn "%A" svar1
+// printfn "%A" svar1
+
+
+let toString list= 
+    let rec toStringCounter list counter=
+        match list, counter with
+        | [], _ -> ""
+        | [head], 0 -> string head  + " "
+        | [head], 1 -> string head  + "x "
+        | [head], _ -> string head  + "x^" + string counter
+        | 0::tail, _ -> toStringCounter tail (counter + 1)
+        | head::tail, 0 -> string head + " " +  "+ " + toStringCounter tail (counter + 1)
+        | head::tail, 1 -> string head  + "x " + "+ " + toStringCounter tail (counter + 1)
+        | head::tail, _ -> string head + "x^" +  string counter + " " + "+ " + (toStringCounter tail (counter + 1))
+
+    toStringCounter list 0
+
+
+// let tester = toString [1;1;1;2;3;0;5]
+
+// printfn "%A" tester
+
+
+let derivative list=
+    let newList = List.tail list
+    let rec derivativeCounter derivative power=
+        match derivative with
+        |[] -> []
+        |[head] -> (head*power)::derivativeCounter [] (power + 1)
+        |head::tail ->  head*power::derivativeCounter tail (power + 1)
+    
+    derivativeCounter  newList 1
+
+
+// let dev = derivative [1;2;2;2]
+
+// printfn "%A" dev
+
+
+let rec mulRepeated listA amount =
+    match amount with
+    | 0 -> [1] // Assuming [1] acts as the identity in your `mul` function
+    | 1 -> listA
+    | _ -> mul listA (mulRepeated listA (amount - 1))
+
+// let potens = mulRepeated [0;0;10;10] 0
+
+// printfn "%A" potens
+
+
+let compose listA listB=
+    let rec composeCounter listA listB counter =
+        match listA with
+        | [] ->  [] 
+        | aHead::aTail -> 
+            add (mulC aHead (mulRepeated listB counter)) (composeCounter aTail listB (counter + 1 )) 
+        
+    composeCounter listA listB 0
+
+
+let compose2 listA listB =
+    let rec composeCounter listA listB counter =
+        match listA with
+        | [] -> []
+        | aHead :: aTail -> 
+            add (mulC aHead (mulRepeated listB counter)) (composeCounter aTail listB (counter + 1))
+    composeCounter listA listB 0
+
+
+// let pleaseJESUS = compose [2;0;0;4] [0;3;2]
+
+// printfn "%A" pleaseJESUS
+
